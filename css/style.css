@@ -670,6 +670,7 @@ summary::marker {
   line-height: 1.2
 }
 .options__item-image {
+  width: 15.625rem;
   height: 15.625rem
 }
 .options__item-image img {
