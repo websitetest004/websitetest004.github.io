@@ -1171,6 +1171,9 @@ summary::marker {
     margin-top: 0
   }
   .hero__container {
+    padding-top: 3.125rem
+  }
+  .hero__container {
     flex-direction: column
   }
   .hero__content {
