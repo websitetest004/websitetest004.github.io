@@ -210,6 +210,9 @@ h6 {
   z-index: 1000;
   transition: background-color .5s
 }
+.header._header-scroll {
+  background-color: rgba(0,66,80,.5)
+}
 .header__container {
   display: flex;
   justify-content: space-between;
