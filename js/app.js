@@ -3759,6 +3759,10 @@
             slidesPerView: 1,
             spaceBetween: 0,
             speed: 800,
+            autoplay: {
+                delay: 2e3,
+                disableOnInteraction: true
+            },
             pagination: {
                 el: ".equity__slider-dots",
                 clickable: true
