@@ -253,6 +253,9 @@ h6 {
 .icon-menu {
   display: none
 }
+.footer {
+  position: relative
+}
 .footer__wrapper {
   display: flex;
   justify-content: space-between;
@@ -320,6 +323,63 @@ h6 {
 }
 summary::marker {
   color: #004250
+}
+.chat {
+  background-color: #000;
+  width: 3.125rem;
+  height: 3.125rem;
+  position: fixed;
+  right: .625rem;
+  bottom: 10%;
+  transition: all ease .3s
+}
+.chat img {
+  width: 1.875rem;
+  height: 1.875rem
+}
+@-webkit-keyframes shake {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0)
+  }
+  25% {
+    -webkit-transform: translateX(-5px);
+    transform: translateX(-5px)
+  }
+  50% {
+    -webkit-transform: translateX(5px);
+    transform: translateX(5px)
+  }
+  75% {
+    -webkit-transform: translateX(-5px);
+    transform: translateX(-5px)
+  }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0)
+  }
+}
+@keyframes shake {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0)
+  }
+  25% {
+    -webkit-transform: translateX(-5px);
+    transform: translateX(-5px)
+  }
+  50% {
+    -webkit-transform: translateX(5px);
+    transform: translateX(5px)
+  }
+  75% {
+    -webkit-transform: translateX(-5px);
+    transform: translateX(-5px)
+  }
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0)
+  }
 }
 .hero {
   position: relative;
@@ -1419,6 +1479,17 @@ summary::marker {
   }
   .footer__privacy-items a:hover {
     text-decoration: underline
+  }
+  .chat:hover {
+    -webkit-animation: shake .5s 3;
+    animation: shake .5s 3
+  }
+  .chat:hover::before {
+    content: "Write us?";
+    position: absolute;
+    top: -1.25rem;
+    left: 0;
+    font-size: .75rem
   }
   .startup__item-link a:hover {
     text-decoration: underline
