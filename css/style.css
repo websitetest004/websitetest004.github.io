@@ -202,6 +202,10 @@ body {
   max-width: 4.0625rem;
   max-height: 4.0625rem
 }
+.block__more img {
+  -webkit-animation: shrinkPulse 1.6s infinite ease-in-out;
+  animation: shrinkPulse 1.6s infinite ease-in-out
+}
 .ibg {
   width: 100%;
   height: 100%;
@@ -243,6 +247,88 @@ summary {
 summary::-webkit-details-marker {
   display: none
 }
+@-webkit-keyframes bounceDown {
+  0%,
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0)
+  }
+  50% {
+    -webkit-transform: translateY(.625rem);
+    transform: translateY(.625rem)
+  }
+}
+@keyframes bounceDown {
+  0%,
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0)
+  }
+  50% {
+    -webkit-transform: translateY(.625rem);
+    transform: translateY(.625rem)
+  }
+}
+@-webkit-keyframes shrinkPulse {
+  0%,
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1)
+  }
+  50% {
+    -webkit-transform: scale(.85);
+    transform: scale(.85)
+  }
+}
+@keyframes shrinkPulse {
+  0%,
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1)
+  }
+  50% {
+    -webkit-transform: scale(.85);
+    transform: scale(.85)
+  }
+}
+.error__container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.875rem;
+  align-items: center;
+  justify-content: center
+}
+.error__title {
+  color: #1c1c51
+}
+.error__text p {
+  text-align: center;
+  line-height: 1.1
+}
+.error__button {
+  border: .0625rem solid #1c1c51;
+  color: #1c1c51
+}
+.cookie__container,
+.privacy__container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  gap: 1.875rem
+}
+.cookie__title,
+.privacy__title {
+  color: #1c1c51
+}
+.cookie__text,
+.privacy__text {
+  max-width: 62.5rem
+}
+.cookie__text p,
+.privacy__text p {
+  line-height: 1.5
+}
 .header {
   position: fixed;
   top: 0;
@@ -264,7 +350,6 @@ summary::-webkit-details-marker {
 }
 .header__logo {
   position: relative;
-  z-index: 5;
   transition: all .5s
 }
 .header__logo-link img {
@@ -367,11 +452,11 @@ summary::-webkit-details-marker {
 }
 .footer__text-policy {
   display: flex;
-  gap: .625rem
+  gap: 1.25rem
 }
 .footer__text-policy a {
   color: #d9bf89;
-  font-weight: 500
+  font-weight: 400
 }
 .footer__contacts-items,
 .footer__navigation-items,
@@ -394,7 +479,7 @@ summary::-webkit-details-marker {
 }
 .footer__contacts-item a,
 .footer__navigation-item a {
-  font-weight: 500;
+  font-weight: 300;
   line-height: 1.1;
   transition: color ease .3s
 }
@@ -465,10 +550,9 @@ address {
 .hero__button a {
   background-color: #fefbf3;
   color: #1c1c51;
-  border: transparent;
-  transition: background-color ease .3s,color ease .3s,-webkit-transform ease .3s;
-  transition: transform ease .3s,background-color ease .3s,color ease .3s;
-  transition: transform ease .3s,background-color ease .3s,color ease .3s,-webkit-transform ease .3s
+  transition: background-color ease .3s,border ease .3s,color ease .3s,-webkit-transform ease .3s;
+  transition: transform ease .3s,background-color ease .3s,border ease .3s,color ease .3s;
+  transition: transform ease .3s,background-color ease .3s,border ease .3s,color ease .3s,-webkit-transform ease .3s
 }
 .hero__scroll {
   display: flex;
@@ -484,7 +568,9 @@ address {
   width: 100%;
   height: 100%;
   -o-object-fit: cover;
-  object-fit: cover
+  object-fit: cover;
+  -webkit-animation: bounceDown 1.8s infinite ease-in-out;
+  animation: bounceDown 1.8s infinite ease-in-out
 }
 .hero__scroll span {
   font-weight: 300;
@@ -555,14 +641,16 @@ address {
 }
 .services__tabs-show {
   display: flex;
-  justify-content: space-between;
-  gap: .625rem
+  justify-content: space-between
 }
 .services__tabs-title {
   font-weight: 500;
   text-transform: capitalize;
   line-height: 1.1;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: .0625rem solid #1c1c51;
   color: #1c1c51;
   border-radius: 100%;
@@ -858,7 +946,6 @@ address {
   background-position: center;
   background-size: 1.125rem;
   padding: .625rem;
-  pointer-events: none;
   border-radius: 100%;
   transition: -webkit-transform .3s ease;
   transition: transform .3s ease;
@@ -931,6 +1018,33 @@ address {
     font-size: 1.25rem
   }
   .h2-title {
+    font-size: 3.75rem
+  }
+  .error__container {
+    padding-top: 12.5rem
+  }
+  .error__container {
+    padding-bottom: 6.25rem
+  }
+  .error__title {
+    font-size: 5rem
+  }
+  .error__subtitle {
+    font-size: 3.75rem
+  }
+  .error__text p {
+    font-size: 2rem
+  }
+  .cookie__container,
+  .privacy__container {
+    padding-top: 12.5rem
+  }
+  .cookie__container,
+  .privacy__container {
+    padding-bottom: 6.25rem
+  }
+  .cookie__title,
+  .privacy__title {
     font-size: 3.75rem
   }
   .header__container {
@@ -1032,6 +1146,9 @@ address {
   }
   .services__tabs-navigation {
     gap: 1.5625rem
+  }
+  .services__tabs-show {
+    gap: .625rem
   }
   .services__tabs-title {
     font-size: 1rem
@@ -1143,6 +1260,33 @@ address {
   .h2-title {
     font-size: 1.875rem
   }
+  .error__container {
+    padding-top: 7.5rem
+  }
+  .error__container {
+    padding-bottom: 5rem
+  }
+  .error__title {
+    font-size: 3.75rem
+  }
+  .error__subtitle {
+    font-size: 2.5rem
+  }
+  .error__text p {
+    font-size: 1.375rem
+  }
+  .cookie__container,
+  .privacy__container {
+    padding-top: 7.5rem
+  }
+  .cookie__container,
+  .privacy__container {
+    padding-bottom: 5rem
+  }
+  .cookie__title,
+  .privacy__title {
+    font-size: 2.5rem
+  }
   .header__container {
     min-height: 4.375rem
   }
@@ -1241,6 +1385,9 @@ address {
     padding-bottom: 1.875rem
   }
   .services__tabs-navigation {
+    gap: .3125rem
+  }
+  .services__tabs-show {
     gap: .3125rem
   }
   .services__tabs-title {
@@ -1347,6 +1494,10 @@ address {
   }
 }
 @media (max-width:47.99875em) {
+  .cookie__text,
+  .privacy__text {
+    max-width: 100%
+  }
   .header__container {
     gap: 0;
     grid-template-columns: auto 1fr auto auto
@@ -1486,13 +1637,13 @@ address {
   .hero__button {
     position: absolute;
     bottom: -10rem;
-    right: 0;
+    right: -.3125rem;
     z-index: 5
   }
   .services__tabs-title {
     padding: .625rem;
     font-size: .75rem;
-    font-weight: 400
+    font-weight: 300
   }
   .services__tab-wrapper {
     flex-direction: column
@@ -1564,6 +1715,33 @@ address {
   }
   .h2-title {
     font-size: clamp(1.875rem ,1.2689393939rem + 3.0303030303vw ,3.75rem)
+  }
+  .error__container {
+    padding-top: clamp(7.5rem ,5.8838383838rem + 8.0808080808vw ,12.5rem)
+  }
+  .error__container {
+    padding-bottom: clamp(5rem ,4.595959596rem + 2.0202020202vw ,6.25rem)
+  }
+  .error__title {
+    font-size: clamp(3.75rem ,3.345959596rem + 2.0202020202vw ,5rem)
+  }
+  .error__subtitle {
+    font-size: clamp(2.5rem ,2.095959596rem + 2.0202020202vw ,3.75rem)
+  }
+  .error__text p {
+    font-size: clamp(1.375rem ,1.172979798rem + 1.0101010101vw ,2rem)
+  }
+  .cookie__container,
+  .privacy__container {
+    padding-top: clamp(7.5rem ,5.8838383838rem + 8.0808080808vw ,12.5rem)
+  }
+  .cookie__container,
+  .privacy__container {
+    padding-bottom: clamp(5rem ,4.595959596rem + 2.0202020202vw ,6.25rem)
+  }
+  .cookie__title,
+  .privacy__title {
+    font-size: clamp(2.5rem ,2.095959596rem + 2.0202020202vw ,3.75rem)
   }
   .header__container {
     min-height: clamp(4.375rem ,3.8699494949rem + 2.5252525253vw ,5.9375rem)
@@ -1664,6 +1842,9 @@ address {
   }
   .services__tabs-navigation {
     gap: clamp(.3125rem ,-.091540404rem + 2.0202020202vw ,1.5625rem)
+  }
+  .services__tabs-show {
+    gap: clamp(.3125rem ,.211489899rem + .5050505051vw ,.625rem)
   }
   .services__tabs-title {
     font-size: clamp(.875rem ,.8345959596rem + .202020202vw ,1rem)
@@ -1772,7 +1953,7 @@ address {
     height: clamp(4.375rem ,3.8699494949rem + 2.5252525253vw ,5.9375rem)
   }
 }
-@media (any-hover:hover) {
+@media (hover:hover)and (pointer:fine) {
   .header__action-link:hover {
     -webkit-transform: scale(.95);
     transform: scale(.95)
@@ -1791,12 +1972,14 @@ address {
   }
   .footer__contacts-item a:hover,
   .footer__navigation-item a:hover {
-    color: #d9bf89
+    color: #d9bf89;
+    text-decoration: underline
   }
   .hero__button a:hover {
     -webkit-transform: scale(.95);
     transform: scale(.95);
-    background-color: #d9bf89;
+    background-color: rgba(0,0,0,0);
+    border: .0625rem solid #fefbf3;
     color: #fefbf3
   }
   .about__social-link a:hover {
@@ -1810,11 +1993,13 @@ address {
     border: .0625rem solid transparent;
     color: #1c1c51
   }
+  .faq__spollers-title:hover {
+    color: #d9bf89
+  }
+}
+@media (any-hover:hover) {
   .reviews__slider-link a:hover {
     -webkit-transform: scale(.95);
     transform: scale(.95)
-  }
-  .faq__spollers-title:hover {
-    color: #d9bf89
   }
 }
