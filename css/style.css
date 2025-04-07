@@ -1631,13 +1631,16 @@ address {
     align-items: normal;
     padding-top: 3.75rem
   }
+  .hero__slider {
+    border-top-right-radius: 1.875rem
+  }
   .hero__slide {
     height: 25rem
   }
   .hero__button {
     position: absolute;
     bottom: -10rem;
-    right: -.3125rem;
+    right: 0;
     z-index: 5
   }
   .services__tabs-title {
