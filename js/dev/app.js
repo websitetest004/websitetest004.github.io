@@ -4371,10 +4371,10 @@ function initSliders() {
       // Підключаємо модулі слайдера
       // для конкретного випадку
       modules: [Navigation],
-      observer: true,
-      observeParents: true,
-      // slidesPerView: 2.5,
-      spaceBetween: 35,
+      observer: false,
+      observeParents: false,
+      // slidesPerView: 1,
+      // spaceBetween: 20,
       //autoHeight: true,
       speed: 500,
       // touchRatio: 1.5,
@@ -4413,6 +4413,11 @@ function initSliders() {
       },
       // Брейкпоінти
       breakpoints: {
+        320: {
+          slidesPerView: 1,
+          spaceBetween: 20
+          // autoHeight: true,
+        },
         640: {
           slidesPerView: 1,
           spaceBetween: 20
@@ -4429,6 +4434,88 @@ function initSliders() {
         1268: {
           slidesPerView: 3,
           spaceBetween: 35
+        }
+      },
+      // Події
+      on: {}
+    });
+  }
+  if (document.querySelector(".works__slider")) {
+    new Swiper(".works__slider", {
+      // <- Вказуємо склас потрібного слайдера
+      // Підключаємо модулі слайдера
+      // для конкретного випадку
+      modules: [Navigation],
+      observer: false,
+      observeParents: false,
+      // slidesPerView: 2.5,
+      // spaceBetween: 35,
+      //autoHeight: true,
+      speed: 500,
+      // touchRatio: 1.5,
+      // simulateTouch: true,
+      loop: true,
+      // touchMoveStopPropagation: false,
+      // passiveListeners: true,
+      //preloadImages: false,
+      //lazy: true,
+      /*
+      // Ефекти
+      effect: 'fade',
+      autoplay: {
+      	delay: 3000,
+      	disableOnInteraction: false,
+      },
+      */
+      // Пагінація
+      /*
+      pagination: {
+      	el: '.swiper-pagination',
+      	clickable: true,
+      },
+      */
+      // Скроллбар
+      /*
+      scrollbar: {
+      	el: '.swiper-scrollbar',
+      	draggable: true,
+      },
+      */
+      // Кнопки "вліво/вправо"
+      navigation: {
+        prevEl: ".works__slider-prev",
+        nextEl: ".works__slider-next"
+      },
+      // Брейкпоінти
+      breakpoints: {
+        320: {
+          slidesPerView: 1.2,
+          spaceBetween: 10,
+          centeredSlides: true
+          // autoHeight: true,
+        },
+        500: {
+          slidesPerView: 1.5,
+          spaceBetween: 20,
+          centeredSlides: true
+          // autoHeight: true,
+        },
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 20
+          // autoHeight: true,
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 20
+        },
+        992: {
+          slidesPerView: 4,
+          spaceBetween: 20
+        },
+        1268: {
+          slidesPerView: 4,
+          spaceBetween: 25
         }
       },
       // Події

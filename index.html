@@ -12,8 +12,8 @@
 		<link rel="preload" href="./assets/fonts/Montserrat-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 		<link rel="shortcut icon" href="assets/img/favicon.ico">
 		<title>Home Page</title>
-		<script type="module" crossorigin="" src="./js/app.min.js?v=1746870698249"></script>
-		<link rel="stylesheet" crossorigin="" href="./css/app.min.css?v=1746870698249">
+		<script type="module" crossorigin="" src="./js/app.min.js?v=1746883887437"></script>
+		<link rel="stylesheet" crossorigin="" href="./css/app.min.css?v=1746883887437">
 	</head>
 	<body>
 		<div class="wrapper">
@@ -112,7 +112,7 @@
 									<h2 class="result__block-title block-title">Так це виглядає насправді</h2>
 									<div data-fls-dynamic=".result__content, 767, 2" class="result__block-subtitle block-subtitle">
 										Від звичайного фото до унікальної фігурки - гортай і надихайся
-										<span>
+										<span class="arrow-text">
 											<img alt="Iконка стрілки" src="./assets/img/icons/arrow.webp">
 										</span>
 									</div>
@@ -143,16 +143,101 @@
 								</div>
 							</div>
 						</div>
-						<div class="result__slider-footer">
+						<div class="result__slider-footer slider-footer">
 							<div class="result__button">
 								<a data-fls-button="" href="#" class="button">Хочу таку ж</a>
 							</div>
-							<div class="result__slider-navigation">
-								<div class="result__slider-prev">
+							<div class="result__slider-navigation slider-navigation">
+								<div class="result__slider-prev slider-prev">
 									<img alt="Стрілка слайдеру вліво" src="./assets/img/icons/slider-arrow.webp">
 								</div>
-								<div class="result__slider-next">
+								<div class="result__slider-next slider-next">
 									<img alt="Стрілка слайдеру вправо" src="./assets/img/icons/slider-arrow.webp">
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="create">
+					<div class="create__container">
+						<div class="create__block block">
+							<h2 class="create__block-title block-title">Готові створити свою?</h2>
+							<div class="create__block-subtitle block-subtitle">
+								Завантаж фото - своє, друга, дитини чи навіть улюбленого персонажа
+								<span class="arrow-text">
+									<img alt="Iконка стрілки" src="./assets/img/icons/arrow.webp">
+								</span>
+							</div>
+						</div>
+						<form class="create__form upload-form">
+							<label for="photo-upload" class="upload-area">
+								<div class="upload-icon">
+									<img alt="Фото завантаження" src="./assets/img/icons/create/01.webp">
+								</div>
+								<p class="upload-text">Upload your photo</p>
+								<input type="file" id="photo-upload" accept="image/*">
+							</label>
+						</form>
+						<div class="create__button">
+							<a data-fls-button="" href="#" class="button">створити</a>
+						</div>
+					</div>
+				</section>
+				<section class="reviews">
+					<div class="reviews__container">
+						<div class="reviews__block block">
+							<h2 class="reviews__block-title block-title">Що кажуть наші клієнти:</h2>
+						</div>
+					</div>
+					<div class="reviews__image">
+						<img src="" alt="Фото відгуків">
+					</div>
+				</section>
+				<section class="works">
+					<div class="works__container">
+						<div class="works__block block">
+							<h2 class="works__block-title block-title">Вони вже отримали свої іграшки:</h2>
+							<span class="works__hashtag" data-fls-dynamic=".works__container, 767, 1">#be-toy</span>
+						</div>
+						<div data-fls-slider="" class="works__slider swiper">
+							<div class="works__wrapper swiper-wrapper">
+								<div class="works__slide swiper-slide">
+									<div class="works__slide-image">
+										<img alt="Фото готових робіт" src="./assets/img/works/01.webp">
+									</div>
+								</div>
+								<div class="works__slide swiper-slide">
+									<div class="works__slide-image">
+										<img alt="Фото готових робіт" src="./assets/img/works/02.webp">
+									</div>
+								</div>
+								<div class="works__slide swiper-slide">
+									<div class="works__slide-image">
+										<img alt="Фото готових робіт" src="./assets/img/works/03.webp">
+									</div>
+								</div>
+								<div class="works__slide swiper-slide">
+									<div class="works__slide-image">
+										<img alt="Фото готових робіт" src="./assets/img/works/04.webp">
+									</div>
+								</div>
+								<div class="works__slide swiper-slide">
+									<div class="works__slide-image">
+										<img alt="Фото готових робіт" src="./assets/img/works/01.webp">
+									</div>
+								</div>
+							</div>
+							<div class="works__slider-footer slider-footer">
+								<div class="works__button">
+									<a data-fls-button="" href="#" class="button">Хочу таку ж</a>
+								</div>
+								<div class="works__slider-navigation slider-navigation">
+									<div class="works__slider-prev slider-prev">
+										<img alt="Стрілка слайдеру вліво" src="./assets/img/icons/slider-arrow.webp">
+									</div>
+									<div class="works__slider-next slider-next">
+										<img alt="Стрілка слайдеру вправо" src="./assets/img/icons/slider-arrow.webp">
+									</div>
 								</div>
 							</div>
 						</div>
