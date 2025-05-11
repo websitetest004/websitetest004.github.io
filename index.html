@@ -12,33 +12,72 @@
 		<link rel="preload" href="./assets/fonts/Montserrat-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
 		<link rel="shortcut icon" href="assets/img/favicon.ico">
 		<title>Home Page</title>
-		<script type="module" crossorigin="" src="./js/app.min.js?v=1746884342712"></script>
-		<link rel="stylesheet" crossorigin="" href="./css/app.min.css?v=1746884342712">
+		<script type="module" crossorigin="" src="./js/app.min.js?v=1746970191602"></script>
+		<link rel="stylesheet" crossorigin="" href="./css/app.min.css?v=1746970191602">
 	</head>
 	<body>
 		<div class="wrapper">
 			<header data-fls-header="" class="header">
 				<div class="header__container">
-					<div class="header__inner">
-						<div class="header__logo">
-							<img alt="Logotype" src="./assets/img/logo.webp">
+					<div class="header__wrapper">
+						<div class="header__inner">
+							<div class="header__logo">
+								<img alt="Logotype" src="./assets/img/logo.webp">
+							</div>
+							<nav class="hero__menu">
+								<ul class="hero__menu-list">
+									<li class="hero__menu-item">
+										<a href="#" class="hero__menu-link">Як замовити</a>
+									</li>
+									<li class="hero__menu-item">
+										<a href="#" class="hero__menu-link">Галерея іграшок</a>
+									</li>
+									<li class="hero__menu-item">
+										<a href="#" class="hero__menu-link">Відгуки</a>
+									</li>
+									<li class="hero__menu-item">
+										<a href="#" class="hero__menu-link">Контакти</a>
+									</li>
+								</ul>
+							</nav>
+							<div class="header__lang">
+								<button class="header__lang-current">UA</button>
+								<ul class="header__lang-dropdown">
+									<li>
+										<a href="/uk">UA</a>
+									</li>
+									<li>
+										<a href="/en">EN</a>
+									</li>
+									<li>
+										<a href="/ru">RU</a>
+									</li>
+								</ul>
+							</div>
+							<nav class="nav-short" id="nav-short">
+								<a href="#">Як замовити</a>
+								<a href="#">Контакти</a>
+							</nav>
+							<!--
+<button class="burger" id="burger">
+<span></span>
+<span></span>
+<span></span>
+</button>
+-->
 						</div>
-						<nav class="nav-short" id="nav-short">
+						<div class="nav-popup" id="nav-popup">
 							<a href="#">Як замовити</a>
+							<a href="#">Галерея іграшок</a>
+							<a href="#">Відгуки</a>
 							<a href="#">Контакти</a>
-						</nav>
-						<button class="burger" id="burger">
-							<span></span>
-							<span></span>
-							<span></span>
-						</button>
+						</div>
 					</div>
-					<div class="nav-popup" id="nav-popup">
-						<a href="#">Як замовити</a>
-						<a href="#">Галерея іграшок</a>
-						<a href="#">Відгуки</a>
-						<a href="#">Контакти</a>
-					</div>
+					<button class="burger" id="burger">
+						<span></span>
+						<span></span>
+						<span></span>
+					</button>
 				</div>
 			</header>
 			<main class="page page--home">
@@ -245,7 +284,46 @@
 				</section>
 			</main>
 			<footer data-fls-footer="" class="footer">
-				<div class="footer__container"></div>
+				<div class="footer__container">
+					<div class="footer__wrapper">
+						<div class="footer__logo">
+							<div class="footer__logo-image">
+								<img alt="Логотип" src="./assets/img/logo.webp">
+							</div>
+							<div data-fls-dynamic=".footer__wrapper, 525" class="footer__logo-copy">© 2025</div>
+						</div>
+						<div class="footer__content">
+							<a href="#" class="footer__content-policy">Політика конфіденційності</a>
+							<a href="#" class="footer__content-terms">Умови використання сайту</a>
+							<nav class="footer__content-lang">
+								<ul class="footer__content-list">
+									<li class="footer__content-item">
+										<a href="/uk/" lang="uk" hreflang="uk" class="footer__content-link _active">UA</a>
+									</li>
+									<li class="footer__content-item">
+										<a href="/en/" lang="en" hreflang="en" class="footer__content-link">EN</a>
+									</li>
+									<li class="footer__content-item">
+										<a href="/ru/" lang="ru" hreflang="ru" class="footer__content-link">RU</a>
+									</li>
+								</ul>
+							</nav>
+						</div>
+						<div class="footer__social">
+							<ul class="footer__social-list">
+								<li class="footer__social-item">
+									<a href="#" class="footer__social-link">Instagram</a>
+								</li>
+								<li class="footer__social-item">
+									<a href="#" class="footer__social-link">TikTok</a>
+								</li>
+								<li class="footer__social-item">
+									<a href="mailto:" class="footer__social-link">support@be_toy.com</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
 			</footer>
 		</div>
 	</body>

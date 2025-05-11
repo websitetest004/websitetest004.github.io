@@ -4432,8 +4432,9 @@ function initSliders() {
           spaceBetween: 20
         },
         1268: {
-          slidesPerView: 3,
-          spaceBetween: 35
+          slidesPerView: 2.5,
+          spaceBetween: 35,
+          centeredSlides: true
         }
       },
       // Події
