@@ -4435,6 +4435,16 @@ function initSliders() {
           slidesPerView: 2.5,
           spaceBetween: 35,
           centeredSlides: true
+        },
+        1269: {
+          slidesPerView: 4,
+          spaceBetween: 35,
+          centeredSlides: true
+        },
+        1920: {
+          slidesPerView: 5,
+          spaceBetween: 35,
+          centeredSlides: true
         }
       },
       // Події
@@ -4542,6 +4552,47 @@ function menuBurger() {
     popup.classList.toggle("active");
     navShort.classList.toggle("hide");
   });
+}
+function reviewsImage() {
+  document.addEventListener("DOMContentLoaded", () => {
+    const columns = document.querySelectorAll(".reviews__column");
+    columns.forEach((column, index) => {
+      const items = column.querySelector(".reviews__items");
+      if (!items) return;
+      const clone = items.cloneNode(true);
+      clone.classList.add("clone");
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("marquee-wrapper");
+      items.parentNode.insertBefore(wrapper, items);
+      wrapper.appendChild(items);
+      wrapper.appendChild(clone);
+      const totalWidth = items.scrollWidth;
+      wrapper.style.width = `${totalWidth * 2}px`;
+      const speed = [40, 60, 50][index % 3];
+      let position = 0;
+      const animate = () => {
+        position -= speed / 60;
+        wrapper.style.transform = `translateX(${position}px)`;
+        if (Math.abs(position) >= totalWidth) {
+          position = 0;
+        }
+        requestAnimationFrame(animate);
+      };
+      animate();
+    });
+  });
+}
+function titleImage() {
+  const imageHTML = `
+  <span data-fls-dynamic=".hero__container, 767, 0" class="hero__image">
+    <img alt="Іконка іграшки"  src="./assets/img/hero/01.webp" >
+  </span>
+`;
+  const title = document.querySelector(".hero__title");
+  title.innerHTML = title.innerHTML.replace("унікальну", '<span class="unique">унікальну</span>');
+  const titleEl = document.querySelector(".hero__title");
+  const newHTML = titleEl.innerHTML.replace("IMAGE", imageHTML);
+  titleEl.innerHTML = newHTML;
 }
 class DynamicAdapt {
   constructor() {
@@ -4664,3 +4715,5 @@ if (document.querySelector("[data-fls-dynamic]")) {
 }
 addLoadedClass();
 menuBurger();
+reviewsImage();
+titleImage();
