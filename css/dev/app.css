@@ -106,6 +106,7 @@ body {
   flex-direction: column;
   overflow: clip;
   background-image: url("../assets/img/bg.webp");
+  will-change: transform;
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -1224,7 +1225,7 @@ body {
     max-height: 3rem;
   }
   .preview__main {
-    max-width: 13.625rem;
+    max-width: 14.0625rem;
     max-height: 21.4375rem;
   }
   .create__preview-area {

@@ -4563,19 +4563,20 @@ function reviewsImage() {
       clone.classList.add("clone");
       const wrapper = document.createElement("div");
       wrapper.classList.add("marquee-wrapper");
+      const container = document.createElement("div");
+      container.classList.add("marquee-container");
+      container.style.display = "flex";
       items.parentNode.insertBefore(wrapper, items);
-      wrapper.appendChild(items);
-      wrapper.appendChild(clone);
+      wrapper.appendChild(container);
+      container.appendChild(items);
+      container.appendChild(clone);
       const totalWidth = items.scrollWidth;
-      wrapper.style.width = `${totalWidth * 2}px`;
-      const speed = [40, 60, 50][index % 3];
+      clone.style.marginLeft = "20px";
       let position = 0;
+      const speed = [40, 60, 50][index % 3];
       const animate = () => {
         position -= speed / 60;
-        wrapper.style.transform = `translateX(${position}px)`;
-        if (Math.abs(position) >= totalWidth) {
-          position = 0;
-        }
+        container.style.transform = `translateX(${position % totalWidth}px)`;
         requestAnimationFrame(animate);
       };
       animate();
