@@ -138,7 +138,7 @@ const ssrWindow = {
     back() {
     }
   },
-  CustomEvent: function CustomEvent() {
+  CustomEvent: function CustomEvent2() {
     return this;
   },
   addEventListener() {
@@ -4364,48 +4364,310 @@ function Navigation(_ref) {
     destroy
   });
 }
+function Autoplay(_ref) {
+  let {
+    swiper,
+    extendParams,
+    on,
+    emit,
+    params
+  } = _ref;
+  swiper.autoplay = {
+    running: false,
+    paused: false,
+    timeLeft: 0
+  };
+  extendParams({
+    autoplay: {
+      enabled: false,
+      delay: 3e3,
+      waitForTransition: true,
+      disableOnInteraction: false,
+      stopOnLastSlide: false,
+      reverseDirection: false,
+      pauseOnMouseEnter: false
+    }
+  });
+  let timeout;
+  let raf;
+  let autoplayDelayTotal = params && params.autoplay ? params.autoplay.delay : 3e3;
+  let autoplayDelayCurrent = params && params.autoplay ? params.autoplay.delay : 3e3;
+  let autoplayTimeLeft;
+  let autoplayStartTime = (/* @__PURE__ */ new Date()).getTime();
+  let wasPaused;
+  let isTouched;
+  let pausedByTouch;
+  let touchStartTimeout;
+  let slideChanged;
+  let pausedByInteraction;
+  let pausedByPointerEnter;
+  function onTransitionEnd(e) {
+    if (!swiper || swiper.destroyed || !swiper.wrapperEl) return;
+    if (e.target !== swiper.wrapperEl) return;
+    swiper.wrapperEl.removeEventListener("transitionend", onTransitionEnd);
+    if (pausedByPointerEnter || e.detail && e.detail.bySwiperTouchMove) {
+      return;
+    }
+    resume();
+  }
+  const calcTimeLeft = () => {
+    if (swiper.destroyed || !swiper.autoplay.running) return;
+    if (swiper.autoplay.paused) {
+      wasPaused = true;
+    } else if (wasPaused) {
+      autoplayDelayCurrent = autoplayTimeLeft;
+      wasPaused = false;
+    }
+    const timeLeft = swiper.autoplay.paused ? autoplayTimeLeft : autoplayStartTime + autoplayDelayCurrent - (/* @__PURE__ */ new Date()).getTime();
+    swiper.autoplay.timeLeft = timeLeft;
+    emit("autoplayTimeLeft", timeLeft, timeLeft / autoplayDelayTotal);
+    raf = requestAnimationFrame(() => {
+      calcTimeLeft();
+    });
+  };
+  const getSlideDelay = () => {
+    let activeSlideEl;
+    if (swiper.virtual && swiper.params.virtual.enabled) {
+      activeSlideEl = swiper.slides.find((slideEl) => slideEl.classList.contains("swiper-slide-active"));
+    } else {
+      activeSlideEl = swiper.slides[swiper.activeIndex];
+    }
+    if (!activeSlideEl) return void 0;
+    const currentSlideDelay = parseInt(activeSlideEl.getAttribute("data-swiper-autoplay"), 10);
+    return currentSlideDelay;
+  };
+  const run = (delayForce) => {
+    if (swiper.destroyed || !swiper.autoplay.running) return;
+    cancelAnimationFrame(raf);
+    calcTimeLeft();
+    let delay = typeof delayForce === "undefined" ? swiper.params.autoplay.delay : delayForce;
+    autoplayDelayTotal = swiper.params.autoplay.delay;
+    autoplayDelayCurrent = swiper.params.autoplay.delay;
+    const currentSlideDelay = getSlideDelay();
+    if (!Number.isNaN(currentSlideDelay) && currentSlideDelay > 0 && typeof delayForce === "undefined") {
+      delay = currentSlideDelay;
+      autoplayDelayTotal = currentSlideDelay;
+      autoplayDelayCurrent = currentSlideDelay;
+    }
+    autoplayTimeLeft = delay;
+    const speed = swiper.params.speed;
+    const proceed = () => {
+      if (!swiper || swiper.destroyed) return;
+      if (swiper.params.autoplay.reverseDirection) {
+        if (!swiper.isBeginning || swiper.params.loop || swiper.params.rewind) {
+          swiper.slidePrev(speed, true, true);
+          emit("autoplay");
+        } else if (!swiper.params.autoplay.stopOnLastSlide) {
+          swiper.slideTo(swiper.slides.length - 1, speed, true, true);
+          emit("autoplay");
+        }
+      } else {
+        if (!swiper.isEnd || swiper.params.loop || swiper.params.rewind) {
+          swiper.slideNext(speed, true, true);
+          emit("autoplay");
+        } else if (!swiper.params.autoplay.stopOnLastSlide) {
+          swiper.slideTo(0, speed, true, true);
+          emit("autoplay");
+        }
+      }
+      if (swiper.params.cssMode) {
+        autoplayStartTime = (/* @__PURE__ */ new Date()).getTime();
+        requestAnimationFrame(() => {
+          run();
+        });
+      }
+    };
+    if (delay > 0) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        proceed();
+      }, delay);
+    } else {
+      requestAnimationFrame(() => {
+        proceed();
+      });
+    }
+    return delay;
+  };
+  const start = () => {
+    autoplayStartTime = (/* @__PURE__ */ new Date()).getTime();
+    swiper.autoplay.running = true;
+    run();
+    emit("autoplayStart");
+  };
+  const stop = () => {
+    swiper.autoplay.running = false;
+    clearTimeout(timeout);
+    cancelAnimationFrame(raf);
+    emit("autoplayStop");
+  };
+  const pause = (internal, reset) => {
+    if (swiper.destroyed || !swiper.autoplay.running) return;
+    clearTimeout(timeout);
+    if (!internal) {
+      pausedByInteraction = true;
+    }
+    const proceed = () => {
+      emit("autoplayPause");
+      if (swiper.params.autoplay.waitForTransition) {
+        swiper.wrapperEl.addEventListener("transitionend", onTransitionEnd);
+      } else {
+        resume();
+      }
+    };
+    swiper.autoplay.paused = true;
+    if (reset) {
+      if (slideChanged) {
+        autoplayTimeLeft = swiper.params.autoplay.delay;
+      }
+      slideChanged = false;
+      proceed();
+      return;
+    }
+    const delay = autoplayTimeLeft || swiper.params.autoplay.delay;
+    autoplayTimeLeft = delay - ((/* @__PURE__ */ new Date()).getTime() - autoplayStartTime);
+    if (swiper.isEnd && autoplayTimeLeft < 0 && !swiper.params.loop) return;
+    if (autoplayTimeLeft < 0) autoplayTimeLeft = 0;
+    proceed();
+  };
+  const resume = () => {
+    if (swiper.isEnd && autoplayTimeLeft < 0 && !swiper.params.loop || swiper.destroyed || !swiper.autoplay.running) return;
+    autoplayStartTime = (/* @__PURE__ */ new Date()).getTime();
+    if (pausedByInteraction) {
+      pausedByInteraction = false;
+      run(autoplayTimeLeft);
+    } else {
+      run();
+    }
+    swiper.autoplay.paused = false;
+    emit("autoplayResume");
+  };
+  const onVisibilityChange = () => {
+    if (swiper.destroyed || !swiper.autoplay.running) return;
+    const document2 = getDocument();
+    if (document2.visibilityState === "hidden") {
+      pausedByInteraction = true;
+      pause(true);
+    }
+    if (document2.visibilityState === "visible") {
+      resume();
+    }
+  };
+  const onPointerEnter = (e) => {
+    if (e.pointerType !== "mouse") return;
+    pausedByInteraction = true;
+    pausedByPointerEnter = true;
+    if (swiper.animating || swiper.autoplay.paused) return;
+    pause(true);
+  };
+  const onPointerLeave = (e) => {
+    if (e.pointerType !== "mouse") return;
+    pausedByPointerEnter = false;
+    if (swiper.autoplay.paused) {
+      resume();
+    }
+  };
+  const attachMouseEvents = () => {
+    if (swiper.params.autoplay.pauseOnMouseEnter) {
+      swiper.el.addEventListener("pointerenter", onPointerEnter);
+      swiper.el.addEventListener("pointerleave", onPointerLeave);
+    }
+  };
+  const detachMouseEvents = () => {
+    if (swiper.el && typeof swiper.el !== "string") {
+      swiper.el.removeEventListener("pointerenter", onPointerEnter);
+      swiper.el.removeEventListener("pointerleave", onPointerLeave);
+    }
+  };
+  const attachDocumentEvents = () => {
+    const document2 = getDocument();
+    document2.addEventListener("visibilitychange", onVisibilityChange);
+  };
+  const detachDocumentEvents = () => {
+    const document2 = getDocument();
+    document2.removeEventListener("visibilitychange", onVisibilityChange);
+  };
+  on("init", () => {
+    if (swiper.params.autoplay.enabled) {
+      attachMouseEvents();
+      attachDocumentEvents();
+      start();
+    }
+  });
+  on("destroy", () => {
+    detachMouseEvents();
+    detachDocumentEvents();
+    if (swiper.autoplay.running) {
+      stop();
+    }
+  });
+  on("_freeModeStaticRelease", () => {
+    if (pausedByTouch || pausedByInteraction) {
+      resume();
+    }
+  });
+  on("_freeModeNoMomentumRelease", () => {
+    if (!swiper.params.autoplay.disableOnInteraction) {
+      pause(true, true);
+    } else {
+      stop();
+    }
+  });
+  on("beforeTransitionStart", (_s, speed, internal) => {
+    if (swiper.destroyed || !swiper.autoplay.running) return;
+    if (internal || !swiper.params.autoplay.disableOnInteraction) {
+      pause(true, true);
+    } else {
+      stop();
+    }
+  });
+  on("sliderFirstMove", () => {
+    if (swiper.destroyed || !swiper.autoplay.running) return;
+    if (swiper.params.autoplay.disableOnInteraction) {
+      stop();
+      return;
+    }
+    isTouched = true;
+    pausedByTouch = false;
+    pausedByInteraction = false;
+    touchStartTimeout = setTimeout(() => {
+      pausedByInteraction = true;
+      pausedByTouch = true;
+      pause(true);
+    }, 200);
+  });
+  on("touchEnd", () => {
+    if (swiper.destroyed || !swiper.autoplay.running || !isTouched) return;
+    clearTimeout(touchStartTimeout);
+    clearTimeout(timeout);
+    if (swiper.params.autoplay.disableOnInteraction) {
+      pausedByTouch = false;
+      isTouched = false;
+      return;
+    }
+    if (pausedByTouch && swiper.params.cssMode) resume();
+    pausedByTouch = false;
+    isTouched = false;
+  });
+  on("slideChange", () => {
+    if (swiper.destroyed || !swiper.autoplay.running) return;
+    slideChanged = true;
+  });
+  Object.assign(swiper.autoplay, {
+    start,
+    stop,
+    pause,
+    resume
+  });
+}
 function initSliders() {
   if (document.querySelector(".result__slider")) {
     new Swiper(".result__slider", {
-      // <- Вказуємо склас потрібного слайдера
-      // Підключаємо модулі слайдера
-      // для конкретного випадку
       modules: [Navigation],
       observer: false,
       observeParents: false,
-      // slidesPerView: 1,
-      // spaceBetween: 20,
-      //autoHeight: true,
       speed: 500,
-      // touchRatio: 1.5,
-      // simulateTouch: true,
       loop: true,
-      // touchMoveStopPropagation: false,
-      // passiveListeners: true,
-      //preloadImages: false,
-      //lazy: true,
-      /*
-      // Ефекти
-      effect: 'fade',
-      autoplay: {
-      	delay: 3000,
-      	disableOnInteraction: false,
-      },
-      */
-      // Пагінація
-      /*
-      pagination: {
-      	el: '.swiper-pagination',
-      	clickable: true,
-      },
-      */
-      // Скроллбар
-      /*
-      scrollbar: {
-      	el: '.swiper-scrollbar',
-      	draggable: true,
-      },
-      */
       // Кнопки "вліво/вправо"
       navigation: {
         prevEl: ".result__slider-prev",
@@ -4453,45 +4715,11 @@ function initSliders() {
   }
   if (document.querySelector(".works__slider")) {
     new Swiper(".works__slider", {
-      // <- Вказуємо склас потрібного слайдера
-      // Підключаємо модулі слайдера
-      // для конкретного випадку
       modules: [Navigation],
       observer: false,
       observeParents: false,
-      // slidesPerView: 2.5,
-      // spaceBetween: 35,
-      //autoHeight: true,
       speed: 500,
-      // touchRatio: 1.5,
-      // simulateTouch: true,
       loop: true,
-      // touchMoveStopPropagation: false,
-      // passiveListeners: true,
-      //preloadImages: false,
-      //lazy: true,
-      /*
-      // Ефекти
-      effect: 'fade',
-      autoplay: {
-      	delay: 3000,
-      	disableOnInteraction: false,
-      },
-      */
-      // Пагінація
-      /*
-      pagination: {
-      	el: '.swiper-pagination',
-      	clickable: true,
-      },
-      */
-      // Скроллбар
-      /*
-      scrollbar: {
-      	el: '.swiper-scrollbar',
-      	draggable: true,
-      },
-      */
       // Кнопки "вліво/вправо"
       navigation: {
         prevEl: ".works__slider-prev",
@@ -4533,6 +4761,165 @@ function initSliders() {
       on: {}
     });
   }
+  if (document.querySelector(".reviews__slider-1")) {
+    new Swiper(".reviews__slider-1", {
+      modules: [Autoplay],
+      observer: false,
+      observeParents: false,
+      slidesPerView: 4,
+      spaceBetween: 20,
+      //autoHeight: true,
+      speed: 5e3,
+      loop: true,
+      // Ефекти
+      // effect: 'fade',
+      autoplay: {
+        delay: 0,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true
+      },
+      allowTouchMove: false,
+      // Брейкпоінти
+      breakpoints: {
+        320: {
+          slidesPerView: 1.2,
+          spaceBetween: 10,
+          centeredSlides: true
+          // autoHeight: true,
+        },
+        500: {
+          slidesPerView: 1.5,
+          spaceBetween: 20,
+          centeredSlides: true
+          // autoHeight: true,
+        },
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 20
+          // autoHeight: true,
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 20
+        },
+        992: {
+          slidesPerView: 3,
+          spaceBetween: 20
+        },
+        1268: {
+          slidesPerView: 4,
+          spaceBetween: 20
+        }
+      },
+      // Події
+      on: {}
+    });
+  }
+  if (document.querySelector(".reviews__slider-2")) {
+    new Swiper(".reviews__slider-2", {
+      modules: [Autoplay],
+      observer: false,
+      observeParents: false,
+      // slidesPerView: 4,
+      // spaceBetween: 20,
+      //autoHeight: true,
+      speed: 6e3,
+      loop: true,
+      // Ефекти
+      // effect: 'fade',
+      autoplay: {
+        delay: 0,
+        reverseDirection: true,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true
+      },
+      allowTouchMove: false,
+      // Брейкпоінти
+      breakpoints: {
+        320: {
+          slidesPerView: 1.2,
+          spaceBetween: 10,
+          centeredSlides: true
+          // autoHeight: true,
+        },
+        500: {
+          slidesPerView: 1.5,
+          spaceBetween: 20,
+          centeredSlides: true
+          // autoHeight: true,
+        },
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 20
+          // autoHeight: true,
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 20
+        },
+        992: {
+          slidesPerView: 3,
+          spaceBetween: 20
+        },
+        1268: {
+          slidesPerView: 4,
+          spaceBetween: 20
+        }
+      },
+      // Події
+      on: {}
+    });
+  }
+  if (document.querySelector(".reviews__slider-3")) {
+    new Swiper(".reviews__slider-3", {
+      modules: [Autoplay],
+      observer: false,
+      observeParents: false,
+      slidesPerView: 4,
+      spaceBetween: 20,
+      speed: 5e3,
+      loop: true,
+      autoplay: {
+        delay: 0,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true
+      },
+      allowTouchMove: false,
+      breakpoints: {
+        320: {
+          slidesPerView: 1.2,
+          spaceBetween: 10,
+          centeredSlides: true
+          // autoHeight: true,
+        },
+        500: {
+          slidesPerView: 1.5,
+          spaceBetween: 20,
+          centeredSlides: true
+          // autoHeight: true,
+        },
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 20
+          // autoHeight: true,
+        },
+        768: {
+          slidesPerView: 3,
+          spaceBetween: 20
+        },
+        992: {
+          slidesPerView: 3,
+          spaceBetween: 20
+        },
+        1268: {
+          slidesPerView: 4,
+          spaceBetween: 20
+        }
+      },
+      // Події
+      on: {}
+    });
+  }
 }
 document.querySelector("[data-fls-slider]") ? window.addEventListener("load", initSliders) : null;
 function addLoadedClass() {
@@ -4544,6 +4931,9 @@ function addLoadedClass() {
     });
   }
 }
+function uniqArray(array) {
+  return array.filter((item, index, self) => self.indexOf(item) === index);
+}
 function menuBurger() {
   const burger = document.getElementById("burger");
   const popup = document.getElementById("nav-popup");
@@ -4553,44 +4943,14 @@ function menuBurger() {
     navShort.classList.toggle("hide");
   });
 }
-function reviewsImage() {
-  document.addEventListener("DOMContentLoaded", () => {
-    const columns = document.querySelectorAll(".reviews__column");
-    columns.forEach((column, index) => {
-      const items = column.querySelector(".reviews__items");
-      if (!items) return;
-      const clone = items.cloneNode(true);
-      clone.classList.add("clone");
-      const wrapper = document.createElement("div");
-      wrapper.classList.add("marquee-wrapper");
-      const container = document.createElement("div");
-      container.classList.add("marquee-container");
-      container.style.display = "flex";
-      items.parentNode.insertBefore(wrapper, items);
-      wrapper.appendChild(container);
-      container.appendChild(items);
-      container.appendChild(clone);
-      const totalWidth = items.scrollWidth;
-      clone.style.marginLeft = "20px";
-      let position = 0;
-      const speed = [40, 60, 50][index % 3];
-      const animate = () => {
-        position -= speed / 60;
-        container.style.transform = `translateX(${position % totalWidth}px)`;
-        requestAnimationFrame(animate);
-      };
-      animate();
-    });
-  });
-}
 function titleImage() {
   const imageHTML = `
-  <span data-fls-dynamic=".hero__container, 767, 0" class="hero__image">
+  <span data-fls-dynamic=".hero__container, 767, 0" data-fls-watcher="" data-fls-watcher-once="" class="hero__image">
     <img alt="Іконка іграшки"  src="./assets/img/hero/01.webp" >
   </span>
 `;
   const title = document.querySelector(".hero__title");
-  title.innerHTML = title.innerHTML.replace("унікальну", '<span class="unique">унікальну</span>');
+  title.innerHTML = title.innerHTML.replace("унікальну", '<span class="unique" data-fls-watcher="" data-fls-watcher-once="">унікальну</span>');
   const titleEl = document.querySelector(".hero__title");
   const newHTML = titleEl.innerHTML.replace("IMAGE", imageHTML);
   titleEl.innerHTML = newHTML;
@@ -4714,7 +5074,124 @@ class DynamicAdapt {
 if (document.querySelector("[data-fls-dynamic]")) {
   window.addEventListener("load", () => new DynamicAdapt());
 }
+class ScrollWatcher {
+  constructor(props) {
+    let defaultConfig = {
+      logging: true
+    };
+    this.config = Object.assign(defaultConfig, props);
+    this.observer;
+    !document.documentElement.classList.contains("watcher") ? this.scrollWatcherRun() : null;
+  }
+  // Оновлюємо конструктор
+  scrollWatcherUpdate() {
+    this.scrollWatcherRun();
+  }
+  // Запускаємо конструктор
+  scrollWatcherRun() {
+    document.documentElement.classList.add("watcher");
+    this.scrollWatcherConstructor(document.querySelectorAll("[data-fls-watcher]"));
+  }
+  // Конструктор спостерігачів
+  scrollWatcherConstructor(items) {
+    if (items.length) {
+      let uniqParams = uniqArray(Array.from(items).map(function(item) {
+        if (item.dataset.flsWatcher === "navigator" && !item.dataset.flsWatcherThreshold) {
+          let valueOfThreshold;
+          if (item.clientHeight > 2) {
+            valueOfThreshold = window.innerHeight / 2 / (item.clientHeight - 1);
+            if (valueOfThreshold > 1) {
+              valueOfThreshold = 1;
+            }
+          } else {
+            valueOfThreshold = 1;
+          }
+          item.setAttribute(
+            "data-fls-watcher-threshold",
+            valueOfThreshold.toFixed(2)
+          );
+        }
+        return `${item.dataset.flsWatcherRoot ? item.dataset.flsWatcherRoot : null}|${item.dataset.flsWatcherMargin ? item.dataset.flsWatcherMargin : "0px"}|${item.dataset.flsWatcherThreshold ? item.dataset.flsWatcherThreshold : 0}`;
+      }));
+      uniqParams.forEach((uniqParam) => {
+        let uniqParamArray = uniqParam.split("|");
+        let paramsWatch = {
+          root: uniqParamArray[0],
+          margin: uniqParamArray[1],
+          threshold: uniqParamArray[2]
+        };
+        let groupItems = Array.from(items).filter(function(item) {
+          let watchRoot = item.dataset.flsWatcherRoot ? item.dataset.flsWatcherRoot : null;
+          let watchMargin = item.dataset.flsWatcherMargin ? item.dataset.flsWatcherMargin : "0px";
+          let watchThreshold = item.dataset.flsWatcherThreshold ? item.dataset.flsWatcherThreshold : 0;
+          if (String(watchRoot) === paramsWatch.root && String(watchMargin) === paramsWatch.margin && String(watchThreshold) === paramsWatch.threshold) {
+            return item;
+          }
+        });
+        let configWatcher = this.getScrollWatcherConfig(paramsWatch);
+        this.scrollWatcherInit(groupItems, configWatcher);
+      });
+    }
+  }
+  // Функція створення налаштувань
+  getScrollWatcherConfig(paramsWatch) {
+    let configWatcher = {};
+    if (document.querySelector(paramsWatch.root)) {
+      configWatcher.root = document.querySelector(paramsWatch.root);
+    } else if (paramsWatch.root !== "null") ;
+    configWatcher.rootMargin = paramsWatch.margin;
+    if (paramsWatch.margin.indexOf("px") < 0 && paramsWatch.margin.indexOf("%") < 0) {
+      return;
+    }
+    if (paramsWatch.threshold === "prx") {
+      paramsWatch.threshold = [];
+      for (let i = 0; i <= 1; i += 5e-3) {
+        paramsWatch.threshold.push(i);
+      }
+    } else {
+      paramsWatch.threshold = paramsWatch.threshold.split(",");
+    }
+    configWatcher.threshold = paramsWatch.threshold;
+    return configWatcher;
+  }
+  // Функція створення нового спостерігача зі своїми налаштуваннями
+  scrollWatcherCreate(configWatcher) {
+    this.observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        this.scrollWatcherCallback(entry, observer);
+      });
+    }, configWatcher);
+  }
+  // Функція ініціалізації спостерігача зі своїми налаштуваннями
+  scrollWatcherInit(items, configWatcher) {
+    this.scrollWatcherCreate(configWatcher);
+    items.forEach((item) => this.observer.observe(item));
+  }
+  // Функція обробки базових дій точок спрацьовування
+  scrollWatcherIntersecting(entry, targetElement) {
+    if (entry.isIntersecting) {
+      !targetElement.classList.contains("--watcher-view") ? targetElement.classList.add("--watcher-view") : null;
+    } else {
+      targetElement.classList.contains("--watcher-view") ? targetElement.classList.remove("--watcher-view") : null;
+    }
+  }
+  // Функція відключення стеження за об'єктом
+  scrollWatcherOff(targetElement, observer) {
+    observer.unobserve(targetElement);
+  }
+  // Функція обробки спостереження
+  scrollWatcherCallback(entry, observer) {
+    const targetElement = entry.target;
+    this.scrollWatcherIntersecting(entry, targetElement);
+    targetElement.hasAttribute("data-fls-watcher-once") && entry.isIntersecting ? this.scrollWatcherOff(targetElement, observer) : null;
+    document.dispatchEvent(new CustomEvent("watcherCallback", {
+      detail: {
+        entry
+      }
+    }));
+  }
+}
+document.querySelector("[data-fls-watcher]") ? window.addEventListener("load", () => new ScrollWatcher({})) : null;
 addLoadedClass();
 menuBurger();
-reviewsImage();
 titleImage();
