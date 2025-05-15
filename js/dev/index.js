@@ -4785,8 +4785,8 @@ function initSliders() {
       // effect: 'fade',
       autoplay: {
         delay: 0,
-        disableOnInteraction: false,
-        pauseOnMouseEnter: true
+        disableOnInteraction: false
+        // pauseOnMouseEnter: true,
       },
       allowTouchMove: false,
       // Брейкпоінти
@@ -4840,8 +4840,8 @@ function initSliders() {
       autoplay: {
         delay: 0,
         reverseDirection: true,
-        disableOnInteraction: false,
-        pauseOnMouseEnter: true
+        disableOnInteraction: false
+        // pauseOnMouseEnter: true,
       },
       allowTouchMove: false,
       // Брейкпоінти
@@ -4891,8 +4891,8 @@ function initSliders() {
       loop: true,
       autoplay: {
         delay: 0,
-        disableOnInteraction: false,
-        pauseOnMouseEnter: true
+        disableOnInteraction: false
+        // pauseOnMouseEnter: true,
       },
       allowTouchMove: false,
       breakpoints: {
