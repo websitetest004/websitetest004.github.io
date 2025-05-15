@@ -4769,7 +4769,7 @@ function initSliders() {
       slidesPerView: 4,
       spaceBetween: 20,
       //autoHeight: true,
-      speed: 5e3,
+      speed: 2200,
       loop: true,
       // Ефекти
       // effect: 'fade',
@@ -4823,7 +4823,7 @@ function initSliders() {
       // slidesPerView: 4,
       // spaceBetween: 20,
       //autoHeight: true,
-      speed: 6e3,
+      speed: 2500,
       loop: true,
       // Ефекти
       // effect: 'fade',
@@ -4877,7 +4877,7 @@ function initSliders() {
       observeParents: false,
       slidesPerView: 4,
       spaceBetween: 20,
-      speed: 5e3,
+      speed: 2200,
       loop: true,
       autoplay: {
         delay: 0,
