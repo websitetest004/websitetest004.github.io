@@ -246,11 +246,14 @@ document.querySelectorAll(".production__media-video").forEach((block) => {
     btn.style.display = "none";
   });
   const scrollBtn = document.getElementById("scrollTopBtn");
+  const chatBtn = document.getElementById("chatBtn");
   window.addEventListener("scroll", () => {
     if (window.scrollY > 2e3) {
       scrollBtn.classList.add("active");
+      chatBtn.classList.add("active");
     } else {
       scrollBtn.classList.remove("active");
+      chatBtn.classList.remove("active");
     }
   });
   scrollBtn.addEventListener("click", () => {
