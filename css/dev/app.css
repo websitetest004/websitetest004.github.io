@@ -1793,7 +1793,7 @@ body:not(.lg-from-hash) .lg-outer.lg-start-zoom .lg-item:not(.lg-zoomable).lg-co
     left: 50%;
   }
   .main__image-dec::before {
-    width: 0.125rem;
+    width: 0.125rem !important;
     height: 10rem;
     top: 5.625rem;
     right: 0.25rem;
